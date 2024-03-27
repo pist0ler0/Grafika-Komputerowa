@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domek ze słońcem</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <label for="obrotSrodka">Obrót względem środka układu:</label>
+  <input type="number" id="obrotSrodka" placeholder="Kąt w stopniach" value="30">
+  <button onclick="obrocWokolSrodka()">Wykonaj</button><br>
+
+  <label for="obrotPunktu">Obrót względem punktu:</label>
+  <input type="number" id="obrotPunktuX" placeholder="X punktu" value="200">
+  <input type="number" id="obrotPunktuY" placeholder="Y punktu" value="200">
+  <input type="number" id="obrotPunktuKat" placeholder="Kąt w stopniach" value="30">
+  <button onclick="obrocWokolPunktu()">Wykonaj</button><br>
+
+  <label for="translacja">Translacja:</label>
+  <input type="number" id="translacjaX" placeholder="Przesunięcie X" value="200">
+  <input type="number" id="translacjaY" placeholder="Przesunięcie Y" value="200">
+  <button onclick="przesun()">Wykonaj</button><br>
+
+  <label for="skalowanie">Skalowanie:</label>
+  <input type="number" id="skalowanieX" placeholder="Skalowanie X" value="1.2">
+  <input type="number" id="skalowanieY" placeholder="Skalowanie Y" value="1.2">
+  <button onclick="skaluj()">Wykonaj</button><br>
+
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+
+  <script>
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    function rysujDomISlonce() {
+      ctx.beginPath();
+      ctx.fillStyle = '#6495ED';
+      ctx.fillRect(0,0,600,400);
+      ctx.fillStyle = '#006400';
+      ctx.fillRect(0,400,600,200);
+      ctx.fillStyle = '#FFEBCD';
+      ctx.strokeRect(50,350,250,200);
+      ctx.fillRect(50,350,250,200);
+      ctx.moveTo(50,350);
+      ctx.lineTo(175,250);
+      ctx.lineTo(300,350);
+      ctx.stroke();
+      ctx.strokeRect(75,375,50,50);
+      ctx.fillStyle = "blue";
+      ctx.fillRect(75,375,50,50);
+      ctx.strokeRect(225,375,50,50);
+      ctx.fillRect(225,375,50,50);
+      ctx.moveTo(100,375);
+      ctx.lineTo(100,425);
+      ctx.moveTo(75,400);
+      ctx.lineTo(125,400);
+      ctx.stroke();
+      ctx.fillStyle = "brown";
+      ctx.fill()
+      ctx.moveTo(250,375);
+      ctx.lineTo(250,425);
+      ctx.moveTo(225,400);
+      ctx.lineTo(275,400);
+      ctx.stroke();
+      ctx.strokeRect(150,470,50,80);
+      ctx.fillStyle = "brown";
+      ctx.fillRect(150,470,50,80);
+      
+      ctx.closePath()
+      ctx.beginPath()
+      ctx.arc(160,510,2,0,Math.PI*2);
+      ctx.stroke();
+      ctx.fillStyle = "black";
+      ctx.fill();
+      ctx.closePath();
+      ctx.beginPath()
+      ctx.fillStyle = "yellow"
+      ctx.arc(500,100,50,0,2*Math.PI);
+      ctx.stroke()
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function wyczyscCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function obrocWokolSrodka() {
+      var kat = parseFloat(document.getElementById('obrotSrodka').value);
+      wyczyscCanvas();
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(kat * Math.PI / 180);
+      ctx.translate(-canvas.width / 2, -canvas.height / 2);
+      rysujDomISlonce();
+      ctx.restore();
+    }
+
+    function obrocWokolPunktu() {
+      var x = parseFloat(document.getElementById('obrotPunktuX').value);
+      var y = parseFloat(document.getElementById('obrotPunktuY').value);
+      var kat = parseFloat(document.getElementById('obrotPunktuKat').value);
+      wyczyscCanvas();
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(kat * Math.PI / 180);
+      ctx.translate(-x, -y);
+      rysujDomISlonce();
+      ctx.restore();
+    }
+
+    function przesun() {
+      var dx = parseFloat(document.getElementById('translacjaX').value);
+      var dy = parseFloat(document.getElementById('translacjaY').value);
+      wyczyscCanvas();
+      ctx.save();
+      ctx.translate(dx, dy);
+      rysujDomISlonce();
+      ctx.restore();
+    }
+
+    function skaluj() {
+      var sx = parseFloat(document.getElementById('skalowanieX').value);
+      var sy = parseFloat(document.getElementById('skalowanieY').value);
+      wyczyscCanvas();
+      ctx.save();
+      ctx.scale(sx, sy);
+      rysujDomISlonce();
+      ctx.restore();
+    }
+
+    rysujDomISlonce();
+  </script>
+</body>
+</html>

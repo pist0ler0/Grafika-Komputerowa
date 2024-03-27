@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rysowanie prostopadłościanu</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rysowanie prostopadłościanu</h1>
+    
+    <form>
+        <label>
+            <input type="radio" name="option" value="1" checked> Obserwator: (-100,0,0), Rzut środkowy
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="option" value="2"> Obserwator: (0,-10,0), Rzut środkowy
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="option" value="3"> Kierunek rzutu: α=45°, φ=30°, w układzie obserwatora
+        </label>
+        <br>
+        <label>
+            Powiększenie: <input type="number" id="scale" value="1" step="0.1" min="0.1" max="10">
+        </label>
+        <br>
+        <button type="button" onclick="drawCube()">Rysuj</button>
+    </form>
+    
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    
+    <script>
+        var canvas = document.getElementById('myCanvas');
+        var ctx = canvas.getContext('2d');
+        
+        var vertices = [
+            [0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0],  // Podstawa dolna
+            [0, 0, 10], [10, 0, 10], [10, 10, 10], [0, 10, 10]  // Podstawa górna
+        ];
+        
+        var faces = [
+            [0, 1, 2, 3],  // Ściana dolna
+            [4, 5, 6, 7],  // Ściana górna
+            [0, 1, 5, 4],  // Ściana boczna
+            [1, 2, 6, 5],  // Ściana boczna
+            [2, 3, 7, 6],  // Ściana boczna
+            [3, 0, 4, 7]  // Ściana boczna
+        ];
+        
+        // Losowe kolory dla każdej ściany
+        var colors = ['red', 'yellow', 'green', 'blue', 'orange', 'purple'];
+        
+        function projectVertex(vertex, option, scale) {
+            var x = vertex[0];
+            var y = vertex[1];
+            var z = vertex[2];
+            
+            if (option === '1') {
+                // Obserwator: (-100,0,0), Rzut środkowy
+                var d = 100;
+                
+                var projectedX = d * (x / (z + d));
+                var projectedY = d * (y / (z + d));
+            } else if (option === '2') {
+                // Obserwator: (0,-10,0), Rzut środkowy
+                var d = 10;
+                
+                var projectedX = x * (d / (z + d));
+                var projectedY = y * (d / (z + d));
+            } else if (option === '3') {
+                // Kierunek rzutu: α=45°, φ=30°, w układzie obserwatora
+                var alpha = 45 * Math.PI / 180;
+                var phi = 30 * Math.PI / 180;
+                
+                var projectedX = x * Math.cos(phi) - y * Math.sin(alpha) * Math.sin(phi);
+                var projectedY = z + x * Math.sin(phi) + y * Math.sin(alpha) * Math.cos(phi);
+            }
+            
+            projectedX *= scale;
+            projectedY *= scale;
+            
+            return [projectedX, projectedY];
+        }
+        
+        function drawCube() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            var option = document.querySelector('input[name="option"]:checked').value;
+            var scale = parseFloat(document.getElementById('scale').value);
+            
+            for (var i = 0; i < faces.length; i++) {
+                var face = faces[i];
+                var color = colors[i % colors.length];
+                
+                ctx.beginPath();
+                
+                for (var j = 0; j < face.length; j++) {
+                    var vertexIndex = face[j];
+                    var vertex = vertices[vertexIndex];
+                    var projectedVertex = projectVertex(vertex, option, scale);
+                    
+                    var x = projectedVertex[0] + canvas.width / 2;
+                    var y = projectedVertex[1] + canvas.height / 2;
+                    
+                    if (j === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+        }
+    </script>
+</body>
+</html>

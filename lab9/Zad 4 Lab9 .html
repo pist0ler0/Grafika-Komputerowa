@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Wizualizacja przekształceń liniowych</title>
+    <style>
+        canvas {
+            margin-bottom: 20px;
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            // Rzut równoległy ortogonalny: x’=x, y’=y, z=0
+            function drawOrthogonalProjection(a) {
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                document.body.appendChild(canvas);
+
+                var ctx = canvas.getContext('2d');
+                ctx.strokeStyle = 'black';
+
+                // Rysowanie krawędzi sześcianu
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(a, 0);
+                ctx.lineTo(a, a);
+                ctx.lineTo(0, a);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // Rzut równoległy nieortogonalny: x’=x+rcos() y’=y+rsin()
+            function drawNonOrthogonalProjection(a, alpha, phi) {
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                document.body.appendChild(canvas);
+
+                var ctx = canvas.getContext('2d');
+                ctx.strokeStyle = 'black';
+
+                // Rysowanie krawędzi sześcianu
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(a * Math.cos(alpha), 0);
+                ctx.lineTo(a * Math.cos(alpha), a * Math.sin(alpha));
+                ctx.lineTo(0, a * Math.sin(phi));
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // Rzut środkowy: x’=xd/(z+d), y’=yd/(z+d)
+            function drawCentralProjection(a, d) {
+                var canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                document.body.appendChild(canvas);
+
+                var ctx = canvas.getContext('2d');
+                ctx.strokeStyle = 'black';
+
+                // Rysowanie krawędzi sześcianu
+                ctx.beginPath();
+                ctx.moveTo(-a/2, -a/2 + d);
+                ctx.lineTo(a/2, -a/2 + d);
+                ctx.lineTo(a/2, a/2 + d);
+                ctx.lineTo(-a/2, a/2 + d);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+
+            // Obsługa formularza
+            document.getElementById('projectionForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Zapobieganie domyślnej akcji formularza
+
+                var a = parseInt(document.getElementById('aInput').value);
+                var alpha = parseFloat(document.getElementById('alphaInput').value);
+                var phi = parseFloat(document.getElementById('phiInput').value);
+                var d = parseInt(document.getElementById('dInput').value);
+
+                // Narysuj rzuty w oddzielnych okienkach
+                drawOrthogonalProjection(a);
+                drawNonOrthogonalProjection(a, alpha, phi);
+                drawCentralProjection(a, d);
+            });
+        };
+    </script>
+</head>
+<body>
+    <form id="projectionForm">
+        <label for="aInput">Bok sześcianu:</label>
+        <input type="number" id="aInput" value="100" required><br>
+
+        <label for="alphaInput">Kąt alpha:</label>
+        <input type="number" id="alphaInput" value="0.7853981633974483" required><br>
+
+        <label for="phiInput">Kąt phi:</label>
+        <input type="number" id="phiInput" value="0.5235987755982989" required><br>
+
+        <label for="dInput">Odległość obserwatora:</label>
+        <input type="number" id="dInput" value="200" required><br>
+
+        <input type="submit" value="Narysuj">
+    </form>
+
+
+</body>
+</html>

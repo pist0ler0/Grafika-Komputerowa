@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformacje na Canvas</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="400" height="400"></canvas>
+
+  <script>
+    // Początkowe współrzędne punktu
+    var punkt = { x: 30, y: 30 };
+
+    // Inicjalizacja canvas
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // Funkcja rysująca punkt na canvas
+    function rysujPunkt(x, y, kolor) {
+      ctx.fillStyle = kolor;
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+	
+	var przekształconyPunktST = { x: punkt.x, y: punkt.y };
+    rysujPunkt(przekształconyPunktST.x, przekształconyPunktST.y, 'red'); 
+
+    // Translacja o T[2,3]
+    ctx.translate(20, 30);
+    rysujPunkt(punkt.x, punkt.y, 'blue'); // Rysowanie punktu po translacji
+
+    // Resetowanie transformacji
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Skalowanie o S[1/2,2]
+    ctx.scale(1/2, 2);
+    rysujPunkt(punkt.x, punkt.y, 'orange'); // Rysowanie punktu po skalowaniu
+
+    // Resetowanie transformacji
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Wykonanie przekształceń TS
+    ctx.translate(20, 30);
+    ctx.scale(1/2, 2);
+    var przekształconyPunktTS = { x: punkt.x, y: punkt.y };
+    rysujPunkt(przekształconyPunktTS.x, przekształconyPunktTS.y, 'green'); // Rysowanie punktu po przekształceniach TS
+
+    // Resetowanie transformacji
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Wykonanie przekształceń ST
+    ctx.scale(1/2, 2);
+    ctx.translate(20, 30);
+    var przekształconyPunktST = { x: punkt.x, y: punkt.y };
+    rysujPunkt(przekształconyPunktST.x, przekształconyPunktST.y, 'purple'); // Rysowanie punktu po przekształceniach ST
+  </script>
+</body>
+</html>

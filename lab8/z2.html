@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformacje Płotu</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <label for="fenceX">Współrzędna X lewego dolnego rogu:</label>
+  <input type="number" id="fenceX" placeholder="X" value="100"><br>
+
+  <label for="fenceY">Współrzędna Y lewego dolnego rogu:</label>
+  <input type="number" id="fenceY" placeholder="Y" value="200"><br>
+
+  <label for="fenceWidth">Szerokość sztachety:</label>
+  <input type="number" id="fenceWidth" placeholder="Szerokość" value="30"><br>
+
+  <label for="fenceHeight">Wysokość sztachety:</label>
+  <input type="number" id="fenceHeight" placeholder="Wysokość" value="60"><br>
+
+  <label for="fenceTilt">Kąt nachylenia sztachety :</label>
+  <input type="number" id="fenceTilt" placeholder="Kąt" value="20"><br>
+
+  <label for="numOfFences">Liczba sztachet:</label>
+  <input type="number" id="numOfFences" placeholder="Liczba" value="5"><br>
+
+  <button onclick="zastosujTransformacje()">Rysuj</button><br>
+
+  <canvas id="myCanvas" width="800" height="400"></canvas>
+
+  <script>
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    function rysujSztachete(x, y, szerokosc, wysokosc, nachylenie) {
+      context.save();
+      context.translate(x, y);
+      context.rotate(nachylenie * Math.PI / 180);
+      context.fillStyle = 'brown';
+      context.fillRect(-szerokosc / 2, 0, szerokosc, wysokosc / 0.5);
+
+      // Rysowanie trójkąta (czuba) na górnej krawędzi prostokąta
+      context.beginPath();
+      context.fillStyle = 'brown';
+      context.beginPath();
+      context.moveTo(szerokosc / 2, 0);
+      context.lineTo(0, -wysokosc / 1.5);
+      context.lineTo(-szerokosc / 2, 0);
+      context.closePath();
+      context.fill();
+
+      context.restore();
+    }
+
+    function zastosujTransformacje() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      var xSztachety = parseFloat(document.getElementById('fenceX').value);
+      var ySztachety = parseFloat(document.getElementById('fenceY').value);
+      var szerokoscSztachety = parseFloat(document.getElementById('fenceWidth').value);
+      var wysokoscSztachety = parseFloat(document.getElementById('fenceHeight').value);
+      var nachylenieSztachety = parseFloat(document.getElementById('fenceTilt').value);
+      var liczbaSztachet = parseInt(document.getElementById('numOfFences').value);
+
+      for (var i = 0; i < liczbaSztachet; i++) {
+        rysujSztachete(xSztachety + i * (szerokoscSztachety + 10), ySztachety, szerokoscSztachety, wysokoscSztachety, nachylenieSztachety);
+      }
+
+      context.setTransform(1, 0, 0, 1, 0, 0);
+    }
+  </script>
+</body>
+</html>

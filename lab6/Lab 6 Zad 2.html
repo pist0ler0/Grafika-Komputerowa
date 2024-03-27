@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <title>Wielobok</title>
+    <script type="text/javascript">
+     var pkt = [];
+	 var context;
+
+
+   function draw(form)
+   {
+       var canvas = document.getElementById('image');
+       context = canvas.getContext('2d');
+        
+	   pkt.push({x: 400, y: 10});
+	   pkt.push({x: 450, y: 60});
+	   pkt.push({x: 60, y: 450});
+	   pkt.push({x: 10, y: 400});
+
+       for(var i = 0, j=pkt.length - 1; i < pkt.length; j = i++)
+	   {
+			context.beginPath();
+            context.moveTo(pkt[j].x, pkt[j].y);
+            context.lineTo(pkt[i].x, pkt[i].y);
+            context.stroke();
+       }       
+	   
+	   document.getElementById('wynik').innerHTML = "Kliknij";
+}
+function klikMyszy(event)
+{
+    var wynik = false;
+    var x = event.clientX - 8;
+    var y = event.clientY - 72;
+ 
+    for (var i = 0, j = pkt.length - 1; i < pkt.length; j = i++) {
+        if(((pkt[i].y > y) !== (pkt[j].y > y)) &&
+        (x < ((pkt[j].x - pkt[i].x)*(y-pkt[i].y)) / (pkt[j].y - pkt[i].y)+pkt[i].x)){ 
+            wynik = !wynik;
+        }
+        if ((pkt[i].y === y && y === pkt[j].y) &&
+        (x >= Math.min(pkt[i].x,pkt[j].x) && x <= Math.max(pkt[i].x, pkt[j].x))){
+            wynik = true;
+        }
+    }
+    document.getElementById('wynik').innerHTML = wynik ? "W Srodku" : "Na Zewnatrz";    
+}
+    
+    </script>
+</head>
+<body>
+ 
+<form>
+	<div id='wynik'>Narysuj i kliknij</div><br>
+     <input type="button" name="przycisk" value="Narysuj"  onclick="draw(this.form);"><BR>
+    <canvas id="image" width="500" height="500" onmousedown="klikMyszy(event)" style="border: 1px solid black">
+       
+    </canvas>
+</form>
+        
+</body>
+</html>
